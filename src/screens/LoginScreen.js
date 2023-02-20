@@ -1,9 +1,39 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Alert, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import Bg from '../assets/images/welcomeScreenBg.png'
 import TextInputComp from '../components/TextInputComp'
 import Btn from '../components/Btn'
+import auth from '@react-native-firebase/auth';
 const LoginScreen = () => {
+
+    const [email, setEmail] = useState('')
+    const [pwd, setPwd] = useState('')
+
+
+    const loginHandler = async () => {
+
+        if (!email || !pwd) {
+            return Alert.alert('Fill all fields')
+        }
+
+        auth()
+            .signInWithEmailAndPassword(email, pwd)
+            .then(() => {
+                console.log('User account created & signed in!');
+            })
+            .catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('That email address is already in use!');
+                }
+
+                if (error.code === 'auth/invalid-email') {
+                    console.log('That email address is invalid!');
+                }
+
+                console.error(error);
+            });
+    }
+
     return (
         <View
             style={styles.container}
@@ -16,9 +46,9 @@ const LoginScreen = () => {
             </ImageBackground>
 
             <View style={styles.subWrpr} >
-                <TextInputComp placeholder='User ID' />
-                <TextInputComp placeholder='Password' containerStyle={{ marginTop: 10 }} />
-                <Btn label='Log-In' containerStyle={{ marginTop: 20 }} />
+                <TextInputComp onChangeText={e => setEmail(e)} placeholder='Email' />
+                <TextInputComp onChangeText={e => setPwd(e)} placeholder='Password' containerStyle={{ marginTop: 10 }} />
+                <Btn onPress={loginHandler} label='Log-In' containerStyle={{ marginTop: 20 }} />
                 <TouchableOpacity >
                     <Text style={styles.fgtPwd} >Forgot Password?</Text>
                 </TouchableOpacity>

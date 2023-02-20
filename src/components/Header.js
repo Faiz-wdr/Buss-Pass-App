@@ -1,0 +1,35 @@
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import BackIco from '../assets/icons/backIco.png'
+import { useNavigation } from '@react-navigation/native'
+const Header = ({ title }) => {
+
+    const navigation = useNavigation()
+    return (
+        <View style={styles.container} >
+            <TouchableOpacity onPress={() => navigation.goBack()} >
+                <Image source={BackIco} style={styles.backIco} />
+            </TouchableOpacity>
+            <Text style={styles.title}>{title}</Text>
+        </View>
+    )
+}
+
+export default Header
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    backIco: {
+        height: 25,
+        width: 25
+    },
+    title: {
+        marginLeft: 10,
+        color: '#2A4341',
+        fontSize: 22,
+        fontWeight: '700',
+    }
+})

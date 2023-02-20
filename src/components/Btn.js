@@ -4,7 +4,7 @@ import React from 'react'
 const Btn = ({ onPress, label, containerStyle }) => {
     return (
         <TouchableOpacity style={{ ...styles.container, ...containerStyle }} onPress={onPress} >
-            <Text>{label}</Text>
+            <Text style={styles.label} >{label}</Text>
         </TouchableOpacity>
     )
 }
@@ -18,5 +18,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10
+    },
+    label: {
+        color: 'white'
     }
 })
