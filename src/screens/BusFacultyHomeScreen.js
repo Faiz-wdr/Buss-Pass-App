@@ -13,6 +13,9 @@ const BusFacultyHomeScreen = ({ navigation }) => {
 
     const [user, setUser] = useState({})
     const [loading, setLoading] = useState(true)
+    const [students, setStudents] = useState([])
+
+
     const getUserDetails = async () => {
         const email = auth().currentUser.email
         await firestore()
@@ -34,26 +37,18 @@ const BusFacultyHomeScreen = ({ navigation }) => {
     }
 
 
-    const names = [
-        { name: 'Isabella Kimon', entered: true },
-        { name: 'Sebastin Varghese', entered: true },
-        { name: 'Emma Mathew', entered: false },
-        { name: 'Amelia Nolan', entered: true },
-        { name: 'name', entered: false },
-        { name: 'name', entered: true },
-        { name: 'Isabella Kimon', entered: true },
-        { name: 'Sebastin Varghese', entered: true },
-        { name: 'Emma Mathew', entered: false },
-        { name: 'Amelia Nolan', entered: true },
-        { name: 'name', entered: false },
-        { name: 'name', entered: true },
-        { name: 'Isabella Kimon', entered: true },
-        { name: 'Sebastin Varghese', entered: true },
-        { name: 'Emma Mathew', entered: false },
-        { name: 'Amelia Nolan', entered: true },
-        { name: 'name', entered: false },
-        { name: 'name', entered: true },
-    ]
+    const onBackPress = () => {
+        Alert.alert('Logout', 'Are you sure want to logout', [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            { text: 'OK', onPress: () => auth().signOut() },
+        ]);
+    }
+
+
 
     const NameItem = ({ item }) => (
         <View style={styles.nContainer}>
@@ -69,20 +64,31 @@ const BusFacultyHomeScreen = ({ navigation }) => {
                 <Text style={styles.busNo}>Bus No: <Text style={{ color: 'white' }} >{user?.busNo}</Text></Text>
                 <Text style={styles.loc}>{user?.route}</Text>
                 <View style={styles.fLine} />
-
             </ImageBackground>
         )
     }
 
     useEffect(() => {
         getUserDetails()
+        if (students.length == 0) {
+            setStudents([{ name: 'Isabella Kimon', entered: false, code: 12345 },
+            { name: 'Sebastin Varghese', entered: true, code: 586 },
+            { name: 'Emma Mathew', entered: false, code: 5648 },
+            { name: 'Amelia Nolan', entered: true, code: 789 },
+            { name: 'name', entered: false, code: 235 },
+            { name: 'name', entered: true, code: 12 },])
+        }
+        // console.log(students)
     }, [])
+
+
+
 
     if (loading) return <Loader />
 
     return (
         <View style={styles.container} >
-            <Header title={'TripSpark'} />
+            <Header onBackPress={onBackPress} title={'TripSpark'} />
 
             <FacultyCard />
 
@@ -91,10 +97,10 @@ const BusFacultyHomeScreen = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
             >
                 {
-                    names.map((item, id) => <NameItem key={id + ''} item={item} />)
+                    students.map((item, id) => <NameItem key={id + ''} item={item} />)
                 }
             </ScrollView>
-            <Btn onPress={() => navigation.navigate('QRCodeScanner')} label={'Scan QR Code'} containerStyle={{ marginVertical: 25, }} />
+            <Btn onPress={() => navigation.navigate('QRCodeScanner', { state: { students, setStudents } })} label={'Scan QR Code'} containerStyle={{ marginVertical: 25, }} />
 
         </View>
     )

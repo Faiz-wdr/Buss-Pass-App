@@ -4,6 +4,7 @@ import BusFacultyHomeScreen from '../screens/BusFacultyHomeScreen';
 import QRCodeScannerScreen from '../screens/QRCodeScannerScreen';
 
 const Stack = createNativeStackNavigator();
+
 const AppNav = () => {
   return (
     <Stack.Navigator
