@@ -1,19 +1,21 @@
 import { Alert, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import FCardBg from '../assets/images/fCard.png'
 import Btn from '../components/Btn'
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../components/Loader'
+import { AppContext } from '../context/AppProvider'
 
 
 const BusFacultyHomeScreen = ({ navigation }) => {
 
+    const { students} = useContext(AppContext)
 
     const [user, setUser] = useState({})
     const [loading, setLoading] = useState(true)
-    const [students, setStudents] = useState([])
+    // const [students, setStudents] = useState([])
 
 
     const getUserDetails = async () => {
@@ -40,11 +42,11 @@ const BusFacultyHomeScreen = ({ navigation }) => {
     const onBackPress = () => {
         Alert.alert('Logout', 'Are you sure want to logout', [
             {
-                text: 'Cancel',
+                text: 'No',
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-            { text: 'OK', onPress: () => auth().signOut() },
+            { text: 'Yes', onPress: () => auth().signOut() },
         ]);
     }
 
@@ -70,15 +72,7 @@ const BusFacultyHomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         getUserDetails()
-        if (students.length == 0) {
-            setStudents([{ name: 'Isabella Kimon', entered: false, code: 12345 },
-            { name: 'Sebastin Varghese', entered: true, code: 586 },
-            { name: 'Emma Mathew', entered: false, code: 5648 },
-            { name: 'Amelia Nolan', entered: true, code: 789 },
-            { name: 'name', entered: false, code: 235 },
-            { name: 'name', entered: true, code: 12 },])
-        }
-        // console.log(students)
+
     }, [])
 
 
@@ -100,7 +94,7 @@ const BusFacultyHomeScreen = ({ navigation }) => {
                     students.map((item, id) => <NameItem key={id + ''} item={item} />)
                 }
             </ScrollView>
-            <Btn onPress={() => navigation.navigate('QRCodeScanner', { state: { students, setStudents } })} label={'Scan QR Code'} containerStyle={{ marginVertical: 25, }} />
+            <Btn onPress={() => navigation.navigate('QRCodeScanner')} label={'Scan QR Code'} containerStyle={{ marginVertical: 25, }} />
 
         </View>
     )

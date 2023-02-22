@@ -1,11 +1,13 @@
 import { Alert, PermissionsAndroid, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { Camera, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
 import { BarcodeFormat, useScanBarcodes } from 'vision-camera-code-scanner';
+import { AppContext } from '../context/AppProvider';
 const QRCodeScannerScreen = ({ route, navigation }) => {
 
-    const { students, setStudents } = route.params.state
+    // const { students, setStudents } = route.params.state
+    const { students, setStudents } = useContext(AppContext)
 
 
     const [hasPermission, setHasPermission] = useState(false);
@@ -65,13 +67,14 @@ const QRCodeScannerScreen = ({ route, navigation }) => {
                     tempStudents.forEach((s, id) => {
                         if (s.code == studentCode) {
                             student = s
-                            tempStudents[id].entered == true
+                            tempStudents[id].entered =true
                         }
                     })
                     if (student) {
                         setIsActive(false)
-
+                        console.log(tempStudents)
                         setStudents([...tempStudents])
+
                         Alert.alert(student.name + ' successfully entered')
                         navigation.goBack()
                     } else {
