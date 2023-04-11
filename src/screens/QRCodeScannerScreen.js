@@ -62,32 +62,21 @@ const QRCodeScannerScreen = ({ route, navigation }) => {
                 const studentCode = barcodes[0].rawValue.split('/')[4] ?? null
 
                 if (studentCode) {
-                    let student = null
-                    let tempStudents = [...students]
-                    tempStudents.forEach((s, id) => {
-                        if (s.code == studentCode) {
-                            student = s
-                            tempStudents[id].entered =true
-                        }
-                    })
-                    if (student) {
-                        setIsActive(false)
-                        console.log(tempStudents)
-                        setStudents([...tempStudents])
 
-                        Alert.alert(student.name + ' successfully entered')
-                        navigation.goBack()
-                    } else {
-                        Alert.alert('No student in this code, Try again')
-                    }
-                } else {
-                    Alert.alert('Not a valid url, Try again')
+
+
+                    setIsActive(false)
+
+                    // Alert.alert(student.name + ' successfully entered')
+                    // navigation.goBack()
+                    navigation.navigate('FacultyStudentDetails', { studentCode })
                 }
-                // console.log(studentCode)
             } else {
                 Alert.alert('Not a valid url, Try again')
             }
+            // console.log(studentCode)
         }
+
     }, [barcodes])
 
     return (

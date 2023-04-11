@@ -1,4 +1,4 @@
-import { Alert, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import FCardBg from '../assets/images/fCard.png'
@@ -7,11 +7,10 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../components/Loader'
 import { AppContext } from '../context/AppProvider'
+import QRIco from '../assets/icons/qr.png'
 
+const StudentHomeScreen = ({ navigation }) => {
 
-const BusFacultyHomeScreen = ({ navigation }) => {
-
-    const { students, getStudents } = useContext(AppContext)
 
     const [user, setUser] = useState({})
     const [loading, setLoading] = useState(true)
@@ -21,20 +20,17 @@ const BusFacultyHomeScreen = ({ navigation }) => {
     const getUserDetails = async () => {
         const email = auth().currentUser.email
         await firestore()
-            .collection('Users')
-            .doc(email)
+            .collection('Students')
+            // Filter results
+            .where('email', '==', email)
             .get()
-            .then(documentSnapshot => {
-                console.log('User exists: ', documentSnapshot.exists);
-
-                if (documentSnapshot.exists) {
-                    console.log('User data: ', documentSnapshot.data());
-                    setUser(documentSnapshot.data())
-                    getStudents(documentSnapshot.data().busNo)
-                } else {
-                    // Alert.alert('Error please try again')
-                    navigation.navigate('StudentHome')
+            .then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    Alert.alert('Please Try again')
                 }
+                querySnapshot.forEach((doc) => {
+                    setUser({ id: doc.id, ...doc.data() })
+                })
             });
 
         setLoading(false)
@@ -53,20 +49,23 @@ const BusFacultyHomeScreen = ({ navigation }) => {
     }
 
 
-
-    const NameItem = ({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('FacultyStudentDetails', { studentCode: item.id })} style={styles.nContainer}>
-            <Text style={styles.nName}>{item.name}</Text>
-            <View style={{ ...styles.nDot, backgroundColor: item.entered ? '#2BA700' : '#DDDEDD' }} />
+    const RightIco = () => (
+        <TouchableOpacity
+            onPress={() => navigation.navigate('QrCodeScreen', { link: 'https://www.buspass/student/' + user.id })}>
+            <Image source={QRIco} style={{ width: 25, height: 25 }} />
         </TouchableOpacity>
+
     )
+
 
     const FacultyCard = () => {
         return (
-            <ImageBackground source={FCardBg} resizeMode='contain' style={styles.fCard} >
+            <ImageBackground
+
+                source={FCardBg} resizeMode='contain' style={styles.fCard} >
                 <Text style={styles.fName}>{user?.name}</Text>
                 <Text style={styles.busNo}>Bus No: <Text style={{ color: 'white' }} >{user?.busNo}</Text></Text>
-                <Text style={styles.loc}>{user?.route}</Text>
+                <Text style={styles.loc}>{user?.from} - KMCT</Text>
                 <View style={styles.fLine} />
             </ImageBackground>
         )
@@ -84,25 +83,18 @@ const BusFacultyHomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container} >
-            <Header onBackPress={onBackPress} title={'TripSpark'} />
+            <Header onBackPress={onBackPress} title={'TripSpark'} right={<RightIco />} />
 
             <FacultyCard />
 
-            <ScrollView
-                style={styles.nameWrpr}
-                showsVerticalScrollIndicator={false}
-            >
-                {
-                    students.map((item, id) => <NameItem key={id + ''} item={item} />)
-                }
-            </ScrollView>
-            <Btn onPress={() => navigation.navigate('QRCodeScanner')} label={'Scan QR Code'} containerStyle={{ marginVertical: 25, }} />
+            <View style={{ flex: 1 }} />
+            <Btn onPress={() => { }} label={'Fee Payment'} containerStyle={{ marginVertical: 25, }} />
 
         </View>
     )
 }
 
-export default BusFacultyHomeScreen
+export default StudentHomeScreen
 
 const styles = StyleSheet.create({
     container: {

@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import BackIco from '../assets/icons/backIco.png'
 import { useNavigation } from '@react-navigation/native'
-const Header = ({ title, onBackPress }) => {
+const Header = ({ title, onBackPress, right }) => {
 
     const navigation = useNavigation()
 
@@ -21,6 +21,8 @@ const Header = ({ title, onBackPress }) => {
                 <Image source={BackIco} style={styles.backIco} />
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
+            <View style={{ flex: 1 }} />
+            {right}
         </View>
     )
 }
