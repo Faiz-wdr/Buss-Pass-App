@@ -62,9 +62,6 @@ const QRCodeScannerScreen = ({ route, navigation }) => {
                 const studentCode = barcodes[0].rawValue.split('/')[4] ?? null
 
                 if (studentCode) {
-
-
-
                     setIsActive(false)
 
                     // Alert.alert(student.name + ' successfully entered')

@@ -12,11 +12,10 @@ const AppProvider = props => {
     // { name: 'name', entered: true, code: 12 },])
 
     const [students, setStudents] = useState([])
-
-    const contextValue = { students, setStudents, getStudents: (e) => getStudents(e) }
+    const [user, setUser] = useState({})
+    const contextValue = {user, setUser, students, setStudents, getStudents: (e) => getStudents(e) }
 
     const getStudents = async (busNo) => {
-
         let tempData = []
 
         await firestore()

@@ -11,14 +11,14 @@ import QRIco from '../assets/icons/qr.png'
 
 const StudentHomeScreen = ({ navigation }) => {
 
-
-    const [user, setUser] = useState({})
+    const { user, setUser } = useContext(AppContext)
     const [loading, setLoading] = useState(true)
     // const [students, setStudents] = useState([])
 
 
     const getUserDetails = async () => {
         const email = auth().currentUser.email
+        console.log(email)
         await firestore()
             .collection('Students')
             // Filter results
@@ -86,7 +86,9 @@ const StudentHomeScreen = ({ navigation }) => {
             <Header onBackPress={onBackPress} title={'TripSpark'} right={<RightIco />} />
 
             <FacultyCard />
-
+            <TouchableOpacity onPress={() => navigation.navigate('Map')} >
+                <Text style={styles.txtBtn} >Where is my bus?</Text>
+            </TouchableOpacity>
             <View style={{ flex: 1 }} />
             <Btn onPress={() => { }} label={'Fee Payment'} containerStyle={{ marginVertical: 25, }} />
 
@@ -146,5 +148,10 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius: 100
+    },
+    txtBtn: {
+        color: '#2A4341',
+        fontWeight: "700",
+        fontSize: 18
     }
-})
+}) 

@@ -1,4 +1,4 @@
-import { Alert, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, ImageBackground, PermissionsAndroid, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import FCardBg from '../assets/images/fCard.png'
@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../components/Loader'
 import { AppContext } from '../context/AppProvider'
-
+import GetLocation from 'react-native-get-location'
 
 const BusFacultyHomeScreen = ({ navigation }) => {
 
@@ -24,13 +24,14 @@ const BusFacultyHomeScreen = ({ navigation }) => {
             .collection('Users')
             .doc(email)
             .get()
-            .then(documentSnapshot => {
+            .then(async documentSnapshot => {
                 console.log('User exists: ', documentSnapshot.exists);
 
                 if (documentSnapshot.exists) {
                     console.log('User data: ', documentSnapshot.data());
                     setUser(documentSnapshot.data())
-                    getStudents(documentSnapshot.data().busNo)
+                    await getStudents(documentSnapshot.data().busNo)
+
                 } else {
                     // Alert.alert('Error please try again')
                     navigation.navigate('StudentHome')
@@ -40,6 +41,28 @@ const BusFacultyHomeScreen = ({ navigation }) => {
         setLoading(false)
     }
 
+    const updateCurrentLocation = async () => {
+        console.log('hereeeee')
+        let location = {}
+        await GetLocation.getCurrentPosition({
+            enableHighAccuracy: false,
+            timeout: 60000,
+        })
+            .then(loc => {
+                console.log(loc);
+                location = loc
+            })
+
+        if (!location.longitude) return
+        const email = auth().currentUser.email
+        await firestore()
+            .collection('Users')
+            .doc(email)
+            .update({
+                location
+            })
+
+    }
 
     const onBackPress = () => {
         Alert.alert('Logout', 'Are you sure want to logout', [
@@ -52,7 +75,32 @@ const BusFacultyHomeScreen = ({ navigation }) => {
         ]);
     }
 
-
+    const requestLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: 'Geolocation Permission',
+                    message: 'Can we access your location?',
+                    buttonNeutral: 'Ask Me Later',
+                    buttonNegative: 'Cancel',
+                    buttonPositive: 'OK',
+                },
+            );
+            console.log('grantedeeeeeeeeeeeeeeeeeeee', granted);
+            if (granted === 'never_ask_again') {
+                console.log('You can use Geolocation');
+                updateCurrentLocation()
+                return true;
+            } else {
+                console.log('You cannot use Geolocation');
+                return false;
+            }
+        } catch (err) {
+            console.log(err)
+            return false;
+        }
+    };
 
     const NameItem = ({ item }) => (
         <TouchableOpacity onPress={() => navigation.navigate('FacultyStudentDetails', { studentCode: item.id })} style={styles.nContainer}>
@@ -78,6 +126,11 @@ const BusFacultyHomeScreen = ({ navigation }) => {
     }, [])
 
 
+    useEffect(() => {
+        if (user) {
+            requestLocationPermission()
+        }
+    }, [user])
 
 
     if (loading) return <Loader />

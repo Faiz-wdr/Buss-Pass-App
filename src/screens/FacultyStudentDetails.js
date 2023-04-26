@@ -33,12 +33,12 @@ const FacultyStudentDetails = ({ route, navigation }) => {
     }
 
     const getStudent = async () => {
-
         students.forEach((s, idx) => {
             if (s.id == studentCode) {
 
                 // students[idx].entered = true
                 setStudent(s)
+                console.log(student)
             }
         })
 
