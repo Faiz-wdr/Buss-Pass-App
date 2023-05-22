@@ -6,6 +6,12 @@ import FacultyStudentDetails from '../screens/FacultyStudentDetails';
 import StudentHomePage from '../screens/StudentHomePage';
 import QrCodeScreen from '../screens/QrCodeScreen';
 import MapScreen from '../screens/MapScreen';
+import StudentFeePayment from '../screens/StudentFeePayment';
+import AdminHomeScreen from '../screens/AdminHomeScreen';
+import AddBusScreen from '../screens/AddBusScreen';
+import AddStudentScreen from '../screens/AddStudentScreen';
+import BusesScreen from '../screens/BusesScreen';
+import BusDetailsScreen from '../screens/BusDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +26,12 @@ const AppNav = () => {
       <Stack.Screen name="FacultyStudentDetails" component={FacultyStudentDetails} />
       <Stack.Screen name="QrCodeScreen" component={QrCodeScreen} />
       <Stack.Screen name="Map" component={MapScreen} />
+      <Stack.Screen name="StudentFeePayment" component={StudentFeePayment} />
+      <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
+      <Stack.Screen name="AddBus" component={AddBusScreen} />
+      <Stack.Screen name="AddStudent" component={AddStudentScreen} />
+      <Stack.Screen name="Buses" component={BusesScreen} />
+      <Stack.Screen name="BusDetails" component={BusDetailsScreen} />
     </Stack.Navigator>
   )
 }

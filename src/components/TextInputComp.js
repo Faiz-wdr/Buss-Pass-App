@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 
-const TextInputComp = ({ placeholder, containerStyle, onChangeText }) => {
+const TextInputComp = ({ placeholder, containerStyle, onChangeText, keyboardType }) => {
     return (
         <View style={[styles.container, containerStyle]} >
-            <TextInput style={styles.input} placeholder={placeholder} onChangeText={onChangeText} placeholderTextColor='#CACACA' />
+            <TextInput style={styles.input} placeholder={placeholder} keyboardType={keyboardType} onChangeText={onChangeText} placeholderTextColor='#CACACA' />
         </View>
     )
 }

@@ -3,8 +3,10 @@ import React from 'react'
 import Header from '../components/Header'
 import QRCode from 'react-native-qrcode-svg'
 
-const QrCodeScreen = (route) => {
+const QrCodeScreen = ({route}) => {
   const { link } = route?.params ?? {}
+
+  console.log(link)
   return (
     <View style={styles.container}>
       <Header title={'TripSpark'} />

@@ -26,7 +26,8 @@ const StudentHomeScreen = ({ navigation }) => {
             .get()
             .then(querySnapshot => {
                 if (querySnapshot.empty) {
-                    Alert.alert('Please Try again')
+                    // Alert.alert('Please Try again')
+                    navigation.navigate('AdminHome')
                 }
                 querySnapshot.forEach((doc) => {
                     setUser({ id: doc.id, ...doc.data() })
@@ -90,7 +91,7 @@ const StudentHomeScreen = ({ navigation }) => {
                 <Text style={styles.txtBtn} >Where is my bus?</Text>
             </TouchableOpacity>
             <View style={{ flex: 1 }} />
-            <Btn onPress={() => { }} label={'Fee Payment'} containerStyle={{ marginVertical: 25, }} />
+            <Btn onPress={() => navigation.navigate('StudentFeePayment')} label={'Fee Payment'} containerStyle={{ marginVertical: 25, }} />
 
         </View>
     )

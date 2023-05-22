@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
-const Btn = ({ onPress, label, containerStyle }) => {
+const Btn = ({ onPress, label, containerStyle, secondary, disabled }) => {
     return (
-        <TouchableOpacity style={{ ...styles.container, ...containerStyle }} onPress={onPress} >
-            <Text style={styles.label} >{label}</Text>
+        <TouchableOpacity disabled={disabled} style={{ ...styles.container, ...(secondary && { borderWidth: 1, borderColor: '#2A4341', backgroundColor: '#F6F6F6' }), ...containerStyle }} onPress={onPress} >
+            <Text style={{ ...styles.label, ...(secondary && { color: '#2A4341' }), }} >{label}</Text>
         </TouchableOpacity>
     )
 }
