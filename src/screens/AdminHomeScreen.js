@@ -31,7 +31,8 @@ const AdminHomeScreen = ({ navigation }) => {
                     setUser({ id: documentSnapshot.id, ...documentSnapshot.data() })
 
                 } else {
-                    Alert.alert('Error please try again')
+                    // Alert.alert('Error please try again')
+                    navigation.navigate('ParentHome')
                 }
             });
 

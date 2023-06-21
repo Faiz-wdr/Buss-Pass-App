@@ -1,14 +1,18 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import Header from '../components/Header'
 import { AppContext } from '../context/AppProvider'
 import CheckboxComp from '../components/CheckBoxComp'
 import Btn from '../components/Btn'
-const StudentFeePayment = () => {
+import firestore from '@react-native-firebase/firestore';
+const StudentFeePayment = ({ route }) => {
 
     const { user } = useContext(AppContext)
 
-    const [selectedMonths, setSelectedMonths] = useState([...user?.FeesPaid])
+    const { from, student } = route.params ?? {}
+
+    const [stud, setStud] = useState(from != 'parent' ? user : student)
+    const [selectedMonths, setSelectedMonths] = useState([...stud?.FeesPaid])
 
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -24,6 +28,26 @@ const StudentFeePayment = () => {
         }
     }
 
+    const proceedHandler = async () => {
+        if(selectedMonths.length==0){
+            return Alert.alert('select Month to pay.')
+        }
+        console.log('erer')
+        await firestore()
+            .collection('Students')
+            // Filter results
+            .doc(stud.id)
+            .update({
+                FeesPaid: selectedMonths
+            }).then(() => {
+                setStud({ ...stud, FeesPaid: selectedMonths })
+                Alert.alert('Payment done.')
+            }).catch(e => console.log(e))
+
+
+
+
+    }
     return (
         <View style={styles.container}>
             <Header title='TripSpark' />
@@ -34,21 +58,21 @@ const StudentFeePayment = () => {
                     Select Months
                 </Text>
 
-                <View style={{marginTop:10}} >
+                <View style={{ marginTop: 10 }} >
                     {months.map(month =>
                         <View style={styles.monWrpr} >
                             <Text style={styles.mTitle} >{month}</Text>
-                            <CheckboxComp onPress={() => onSelectCheckbox(month)} disabled={user.FeesPaid.includes(month)} checked={selectedMonths.includes(month)} />
+                            <CheckboxComp onPress={() => onSelectCheckbox(month)} disabled={stud.FeesPaid.includes(month)} checked={selectedMonths.includes(month)} />
                         </View>
                     )}
                 </View>
 
                 <View style={styles.totalWrpr} >
                     <Text style={styles.tTitle}>Total</Text>
-                    <Text style={styles.total}>{(selectedMonths.length - user.FeesPaid.length) * 1000}</Text>
+                    <Text style={styles.total}>{(selectedMonths.length - stud.FeesPaid.length) * 1000}</Text>
                 </View>
 
-                <Btn label='Proceed' containerStyle={{marginBottom:20}} />
+                <Btn label='Proceed' onPress={proceedHandler} containerStyle={{ marginBottom: 20 }} />
 
             </ScrollView>
 

@@ -12,6 +12,7 @@ import AddBusScreen from '../screens/AddBusScreen';
 import AddStudentScreen from '../screens/AddStudentScreen';
 import BusesScreen from '../screens/BusesScreen';
 import BusDetailsScreen from '../screens/BusDetailsScreen';
+import ParentHomeScreen from '../screens/ParentHomeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ const AppNav = () => {
     >
       <Stack.Screen name="BusFacultyHome" component={BusFacultyHomeScreen} />
       <Stack.Screen name="StudentHome" component={StudentHomePage} />
+      <Stack.Screen name="ParentHome" component={ParentHomeScreen} />
       <Stack.Screen name="QRCodeScanner" component={QRCodeScannerScreen} />
       <Stack.Screen name="FacultyStudentDetails" component={FacultyStudentDetails} />
       <Stack.Screen name="QrCodeScreen" component={QrCodeScreen} />
