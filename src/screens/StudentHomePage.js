@@ -9,18 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Header from '../components/Header';
 import FCardBg from '../assets/images/fCard.png';
 import Btn from '../components/Btn';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../components/Loader';
-import {AppContext} from '../context/AppProvider';
+import { AppContext } from '../context/AppProvider';
 import QRIco from '../assets/icons/qr.png';
 
-const StudentHomeScreen = ({navigation}) => {
-  const {user, setUser} = useContext(AppContext);
+const StudentHomeScreen = ({ navigation }) => {
+  const { user, setUser } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   // const [students, setStudents] = useState([])
 
@@ -38,7 +38,8 @@ const StudentHomeScreen = ({navigation}) => {
           navigation.navigate('AdminHome');
         }
         querySnapshot.forEach(doc => {
-          setUser({id: doc.id, ...doc.data()});
+          console.log(doc.data())
+          setUser({ id: doc.id, ...doc.data() });
         });
       });
 
@@ -52,7 +53,7 @@ const StudentHomeScreen = ({navigation}) => {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => auth().signOut()},
+      { text: 'Yes', onPress: () => auth().signOut() },
     ]);
   };
 
@@ -63,7 +64,7 @@ const StudentHomeScreen = ({navigation}) => {
           link: 'https://www.buspass/student/' + user.id,
         })
       }>
-      <Image source={QRIco} style={{width: 25, height: 25}} />
+      <Image source={QRIco} style={{ width: 25, height: 25 }} />
     </TouchableOpacity>
   );
 
@@ -74,8 +75,9 @@ const StudentHomeScreen = ({navigation}) => {
         resizeMode="contain"
         style={styles.fCard}>
         <Text style={styles.fName}>{user?.name}</Text>
+        <Image source={{ uri: user.profUrl }} style={styles.profPic} />
         <Text style={styles.busNo}>
-          Bus No: <Text style={{color: 'white'}}>{user?.busNo}</Text>
+          Bus No: <Text style={{ color: 'white' }}>{user?.busNo}</Text>
         </Text>
         <Text style={styles.loc}>{user?.from} - KMCT</Text>
         <View style={styles.fLine} />
@@ -103,11 +105,11 @@ const StudentHomeScreen = ({navigation}) => {
       <TouchableOpacity onPress={() => navigation.navigate('Map')}>
         <Text style={styles.txtBtn}>Where is my bus?</Text>
       </TouchableOpacity>
-      <View style={{flex: 1}} />
+      <View style={{ flex: 1 }} />
       <Btn
         onPress={() => navigation.navigate('StudentFeePayment')}
         label={'Fee Payment'}
-        containerStyle={{marginVertical: 25}}
+        containerStyle={{ marginVertical: 25 }}
       />
     </View>
   );
@@ -127,11 +129,23 @@ const styles = StyleSheet.create({
     paddingVertical: 28,
     // backgroundColor: '#2A4341',
     borderRadius: 10,
+    position: 'relative'
   },
+
   fName: {
     fontSize: 18,
     fontWeight: '700',
     color: 'white',
+  },
+  profPic: {
+    position: 'absolute',
+    right: 20,
+    top: 0,
+    width: 50,
+    height: 50,
+    zIndex: 100,
+    backgroundColor: 'red',
+    borderRadius:100
   },
   busNo: {
     marginVertical: 8,
