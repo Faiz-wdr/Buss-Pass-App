@@ -118,7 +118,8 @@ const AdminHomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container} >
-            <Header onBackPress={onBackPress} title={'TripSpark'} />
+            <Header
+             onBackPress={onBackPress} title={'TripSpark'} />
 
             <View style={styles.sub} >
                 <Btn label='Add Student' onPress={() => navigation.navigate('AddStudent')} />

@@ -7,7 +7,6 @@ import firestore from '@react-native-firebase/firestore';
 import Loader from '../components/Loader';
 import Btn from '../components/Btn';
 import { AppContext } from '../context/AppProvider';
-
 const FacultyStudentDetails = ({ route, navigation }) => {
     // console.log(route.params)
     const { studentCode } = route.params
@@ -21,12 +20,22 @@ const FacultyStudentDetails = ({ route, navigation }) => {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 
+    const updateEnteredStatus = async () => {
+        await firestore()
+            .collection('Students')
+            .doc(studentCode)
+            .update({
+                isEntered: true
+            })
+    }
+
     const onAdmit = () => {
-        students.forEach((s, idx) => {
+        students.forEach(async (s, idx) => {
             if (s.id == studentCode) {
 
                 students[idx].entered = true
                 setStudents([...students])
+                await updateEnteredStatus()
                 navigation.navigate('BusFacultyHome')
             }
         })

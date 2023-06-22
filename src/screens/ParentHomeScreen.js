@@ -24,24 +24,28 @@ const ParentHomeScreen = ({ navigation }) => {
         await firestore()
             .collection('Users')
             // Filter results
-            .where('busNo', '==', user.busNo.toString())
+            .where('busNo', '==', user?.busNo?.toString())
             .get()
             .then(querySnapshot => {
                 if (querySnapshot.empty) {
-                    console.log(user.busNo)
+                    console.log(user.busNo, 'here')
                 } else {
 
                     querySnapshot.forEach((doc) => {
-                        setCurrentLoc({ ...doc.data().location })
-                        console.log(doc.data().location)
-                        mapRef?.current?.animateToRegion({
-                            latitude: doc.data().location.latitude, longitude: doc.data().location.longitude,
-                            latitudeDelta: 0.0158,
-                            longitudeDelta: 0.0070
-                        })
+                        if (doc.data()?.location) {
+                            setCurrentLoc({ ...doc?.data().location, })
+                            console.log(doc.data().location, 'abc')
+                            mapRef?.current?.animateToRegion({
+                                latitude: doc.data().location.latitude, longitude: doc.data().location.longitude,
+                                latitudeDelta: 0.0158,
+                                longitudeDelta: 0.0070
+                            })
+                        }
+
                     })
                 }
             });
+        setLoading(false)
 
     }
 
@@ -53,7 +57,7 @@ const ParentHomeScreen = ({ navigation }) => {
             .get()
             .then(querySnapshot => {
                 if (querySnapshot.empty) {
-                    console.log(user.busNo)
+                    // console.log(user.busNo)
                 } else {
 
                     querySnapshot.forEach((doc) => {
@@ -62,7 +66,7 @@ const ParentHomeScreen = ({ navigation }) => {
                     })
                 }
             });
-        setLoading(false)
+
     }
     const getUserDetails = async () => {
         const email = auth().currentUser.email
@@ -100,9 +104,28 @@ const ParentHomeScreen = ({ navigation }) => {
         getUserDetails()
     }, [])
     useEffect(() => {
-        if (user && isFocussed) {
+        if (user.busNo) {
+            console.log('2here')
+            function onResult(QuerySnapshot) {
+                QuerySnapshot.forEach(doc => {
+                    console.log(doc.data(), 'dddd')
+                    setStudent({ id: doc.id, ...doc.data() })
+                })
+            }
+
+            function onError(error) {
+                console.error(error);
+            }
+
+            firestore().collection('Students').where('email', '==', user?.studentId).onSnapshot(onResult, onError);
+        }
+    }, [user.busNo]);
+    useEffect(() => {
+        console.log(user, 'uss')
+        if (user.busNo && isFocussed) {
+            console.log('hereereere')
             getBusLocation()
-            getStudent()
+            // getStudent()
         }
     }, [user, isFocussed])
 
@@ -136,6 +159,11 @@ const ParentHomeScreen = ({ navigation }) => {
                 <Text style={styles.name} >{student?.name}</Text>
                 <Text style={styles.busNo} >Buss No: <Text style={{ color: 'black' }} >{student?.busNo}</Text></Text>
                 <Text style={styles.route}>{student?.from} - KMCT</Text>
+                {
+                    student?.isEntered ?
+                        <Text style={[styles.route, { color: 'green' }]}>Entered to Bus</Text> :
+                        <Text style={[styles.route, { color: 'red' }]}>Not entered to Bus</Text>
+                }
                 <Btn label={'Fee Payment'} onPress={() => navigation.navigate('StudentFeePayment', { from: 'parent', student })} containerStyle={{ marginTop: 20 }} />
             </View>
 
